@@ -21,4 +21,7 @@ pub enum MsError {
     EmptyMembers,
     PartialExecution,
     NotEnoughLamports,
+    TooManyInstructions,
+    TooManyTransactions
 }
+

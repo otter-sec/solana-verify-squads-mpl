@@ -102,11 +102,14 @@ pub mod squads_mpl {
         if *multisig_account_info.owner != squads_mpl::ID {
             return err!(MsError::InvalidInstructionAccount);
         }
+        #[verify_ignore]
         let curr_data_size = multisig_account_info.data.borrow().len();
+        #[verify_ignore]
         let spots_left =
             ((curr_data_size - Ms::SIZE_WITHOUT_MEMBERS) / 32) - ctx.accounts.multisig.keys.len();
 
         // if not enough, add (10 * 32) to size - bump it up by 10 accounts
+        #[verify_ignore]
         if spots_left < 1 {
             // add space for 10 more keys
             let needed_len = curr_data_size + (10 * 32);
@@ -246,6 +249,10 @@ pub mod squads_mpl {
             0 => ms.bump,
         };
 
+        if ms.transaction_index == u32::MAX {
+            return err!(MsError::TooManyTransactions);
+        }
+
         ms.transaction_index = ms.transaction_index.checked_add(1).unwrap();
         ctx.accounts.transaction.init(
             ctx.accounts.creator.key(),
@@ -294,6 +301,11 @@ pub mod squads_mpl {
         if tx.authority_index == 0 && &incoming_instruction.program_id != ctx.program_id {
             return err!(MsError::InvalidAuthorityIndex);
         }
+
+        if tx.instruction_index == u8::MAX {
+            return err!(MsError::TooManyInstructions);
+        }
+
         tx.instruction_index = tx.instruction_index.checked_add(1).unwrap();
         ctx.accounts.instruction.init(
             tx.instruction_index,
@@ -449,13 +461,15 @@ pub mod squads_mpl {
         ];
 
         // unroll account infos from account_list
-        let mapped_remaining_accounts: Vec<AccountInfo> = account_list
-            .iter()
-            .map(|&i| {
-                let index = usize::from(i);
-                ctx.remaining_accounts[index].clone()
-            })
-            .collect();
+        let mut mapped_remaining_accounts: Vec<AccountInfo> = Vec::new();
+        for &i in account_list.iter() {
+            let index = usize::from(i);
+            if let Some(acc) = ctx.remaining_accounts.get(index) {
+                mapped_remaining_accounts.push(acc.clone());
+            } else {
+                return err!(MsError::InvalidAccountIndex);
+            }
+        }
 
         // iterator for remaining accounts
         let ix_iter = &mut mapped_remaining_accounts.iter();

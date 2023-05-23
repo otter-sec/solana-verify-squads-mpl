@@ -8,6 +8,7 @@ use std::convert::TryInto;
 use anchor_lang::{prelude::*, solana_program::instruction::Instruction};
 use anchor_lang::solana_program::borsh::get_instance_packed_len;
 use otter_solana_verify::*;
+use crate::errors::MsError;
 
 /// Ms is the basic state account for a multisig.
 #[account]
@@ -82,6 +83,9 @@ impl Ms {
     /// This has no effect on the multisig functionality, but is used
     /// to track authorities for clients to use (ie, vault 1, vault 2, program authority 3, etc).
     pub fn add_authority(&mut self) -> Result<()>{
+        if self.authority_index == u16::MAX {
+            return err!(MsError::MaxMembersReached)
+        };
         self.authority_index = self.authority_index.checked_add(1).unwrap();
         Ok(())
     }
