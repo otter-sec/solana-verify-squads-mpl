@@ -7,9 +7,16 @@ use std::convert::TryInto;
 
 use anchor_lang::{prelude::*, solana_program::instruction::Instruction};
 use anchor_lang::solana_program::borsh::get_instance_packed_len;
+use otter_solana_verify::*;
 
 /// Ms is the basic state account for a multisig.
 #[account]
+#[invariant(
+    !self.keys.is_empty()
+    && (self.keys.len() < u16::MAX as usize)
+    && (self.threshold >= 1)
+    && (self.threshold as usize <= self.keys.len())
+)]
 pub struct Ms {
     pub threshold: u16,                 // threshold for signatures to execute.
 
@@ -26,7 +33,7 @@ pub struct Ms {
     pub bump: u8,                       // bump for the multisig seed.
 
     pub create_key: Pubkey,             // random key(or not) used to seed the multisig pda.
-                                   
+
     pub allow_external_execute: bool,   // DEPRECATED - allow non-member keys to execute txs
 
     pub keys: Vec<Pubkey>,              // keys of the members/owners of the multisig.
@@ -108,7 +115,7 @@ impl Ms {
 }
 
 /// MsTransactionStatus enum of the current status of the Multisig Transaction.
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
+#[derive(Arbitrary, AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub enum MsTransactionStatus {
     Draft,          // Transaction default state
     Active,         // Transaction is live and ready
@@ -120,6 +127,7 @@ pub enum MsTransactionStatus {
 
 /// The MsTransaction is the state account for a multisig transaction
 #[account]
+#[invariant()]
 pub struct MsTransaction {
     pub creator: Pubkey,                // creator, used to seed pda
     pub ms: Pubkey,                     // the multisig this belongs to
@@ -263,6 +271,7 @@ impl MsTransaction {
 /// Almost analagous to the native Instruction struct for solana, but with an extra
 /// field for the bump.
 #[account]
+#[invariant()]
 pub struct MsInstruction {
     pub program_id: Pubkey,
     pub keys: Vec<MsAccountMeta>,
@@ -309,21 +318,41 @@ impl From<MsInstruction> for Instruction {
 /// Wrapper for our internal MsInstruction key serialization schema
 /// MsAccount meta is identical to the AccountMeta struct, but defined
 /// here for serialization purposes.
-#[derive(AnchorSerialize,AnchorDeserialize, Copy, Clone)]
+#[derive(Arbitrary, AnchorSerialize, AnchorDeserialize, Copy, Clone)]
 pub struct MsAccountMeta {
     pub pubkey: Pubkey,
     pub is_signer: bool,
     pub is_writable: bool
 }
 
+impl Default for MsAccountMeta {
+    fn default() -> Self {
+        Self {
+            pubkey: Default::default(),
+            is_signer: Default::default(),
+            is_writable: Default::default(),
+        }
+    }
+}
+
 /// Incoming instruction schema, used as an argument in the attach_instruction.
 /// Identical to the solana struct for Instruction, but uses the MsAccountMeta.
 /// Provided for de/serialization purposes.
-#[derive(AnchorSerialize,AnchorDeserialize, Clone)]
+#[derive(Arbitrary, AnchorSerialize, AnchorDeserialize, Clone)]
 pub struct IncomingInstruction {
     pub program_id: Pubkey,
     pub keys: Vec<MsAccountMeta>,
     pub data: Vec<u8>
+}
+
+impl Default for IncomingInstruction {
+    fn default() -> Self {
+        IncomingInstruction {
+            program_id: Pubkey::default(),
+            keys: Vec::new(),
+            data: Vec::new(),
+        }
+    }
 }
 
 impl IncomingInstruction {

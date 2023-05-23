@@ -12,7 +12,7 @@ use crate::errors::*;
 /// 1. multisig account
 /// 2. creator account [signer]
 /// 3. system program
-/// 
+///
 /// Expects the following arguments:
 /// 1. threshold: u16
 /// 2. create_key: Pubkey
@@ -36,7 +36,7 @@ pub struct Create<'info> {
 
 /// The account context for creating a new multisig transaction
 /// Upon fresh creation the transaction will be in a Draft state
-/// 
+///
 /// Expects the following accounts:
 /// 1. multisig account
 /// 2. transaction account
@@ -78,14 +78,14 @@ pub struct CreateTransaction<'info> {
 
 /// The account context for adding an instruction to a transaction
 /// The transaction must be in a Draft state, and the creator must be a member of the multisig
-/// 
+///
 /// Expects the following accounts:
 /// 1. multisig account
 /// 2. transaction account
 /// 3. instruction account
 /// 4. creator account [signer]
 /// 5. system program
-/// 
+///
 /// Expects the following arguments:
 /// 1. instruction_data: IncomingInstruction
 #[derive(Accounts)]
@@ -139,12 +139,12 @@ pub struct AddInstruction<'info> {
 
 /// The account context for activating a transaction
 /// The transaction must be in a Draft state, and the creator must be a member of the multisig
-/// 
+///
 /// Expects the following accounts:
 /// 1. multisig account
 /// 2. transaction account
 /// 3. creator account [signer]
-/// 
+///
 #[derive(Accounts)]
 pub struct ActivateTransaction<'info> {
     #[account(
@@ -182,12 +182,12 @@ pub struct ActivateTransaction<'info> {
 
 /// The account context for voting on a transaction
 /// The transaction must be in an Active state, and the voter must be a member of the multisig
-/// 
+///
 /// Expects the following accounts:
 /// 1. multisig account
 /// 2. transaction account
 /// 3. voter account [signer]
-/// 
+///
 #[derive(Accounts)]
 pub struct VoteTransaction<'info> {
     #[account(
@@ -224,12 +224,12 @@ pub struct VoteTransaction<'info> {
 
 /// The account context for submitting a vote to cancel a transaction
 /// The transaction must be in an ExecuteReady state, and the voter must be a member of the multisig
-/// 
+///
 /// Expects the following accounts:
 /// 1. multisig account
 /// 2. transaction account
 /// 3. member account [signer]
-/// 
+///
 #[derive(Accounts)]
 pub struct CancelTransaction<'info> {
     #[account(
@@ -266,12 +266,12 @@ pub struct CancelTransaction<'info> {
 
 /// The account context for executing a transaction
 /// The transaction must be in an ExecuteReady state, and the creator must be a member of the multisig
-/// 
+///
 /// Expects the following accounts:
 /// 1. multisig account
 /// 2. transaction account
 /// 3. member account [signer]
-/// 
+///
 #[derive(Accounts)]
 pub struct ExecuteTransaction<'info> {
     #[account(
@@ -309,12 +309,12 @@ pub struct ExecuteTransaction<'info> {
 
 /// The account context for executing a transaction instruction individually
 /// The transaction must be in an ExecuteReady state, and the creator must be a member of the multisig, and the instruction must correlate to the next executed index
-/// 
+///
 /// Expects the following accounts:
 /// 1. multisig account
 /// 2. transaction account
 /// 3. member account [signer]
-/// 
+///
 #[derive(Accounts)]
 pub struct ExecuteInstruction<'info> {
     #[account(
@@ -362,7 +362,7 @@ pub struct ExecuteInstruction<'info> {
 }
 
 /// The account context for executing an internal multisig transaction (which changes the multisig account)
-/// 
+///
 /// Expects the following accounts:
 /// 1. multisig account [signer]
 #[derive(Accounts)]
@@ -380,13 +380,13 @@ pub struct MsAuth<'info> {
 }
 
 /// The account context for reallocating the multisig account (for add member, where the size may need to be adjusted)
-/// 
+///
 /// Expects the following accounts:
 /// 1. multisig account [signer]
 /// 2. rent sysvar
 /// 3. system program
-/// 
-/// 
+///
+///
 #[derive(Accounts)]
 pub struct MsAuthRealloc<'info> {
     #[account(
