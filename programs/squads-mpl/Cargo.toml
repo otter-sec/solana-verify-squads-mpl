@@ -19,12 +19,13 @@ no-idl = []
 no-log-ix-name = []
 cpi = ["no-entrypoint"]
 default = []
+kani = ["anchor-lang/kani"]
 
 [dependencies]
 #anchor-lang = "0.26.0"
-anchor-lang = { package = "onchor", path = "/Users/kadir/c/otter/suite/verify/solana" }
+anchor-lang = { package = "onchor", path = "/Users/kadir/c/otter/suite/verify/solana/anchor" }
 default-env = "0.1.1"
 hex = "0.3.1"
 #otter-solana-verify = "1.0.2"
-otter-solana-verify = { package = "onchor-macro", path = "/Users/kadir/c/otter/suite/verify/solana/macro" }
+otter-solana-verify = { package = "otter-solana-macro", path = "/Users/kadir/c/otter/suite/verify/solana/macro", features = ["anchor"] }
 solana-security-txt = "1.0.1"

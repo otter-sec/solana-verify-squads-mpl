@@ -988,6 +988,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "kani"
+version = "0.32.0"
+dependencies = [
+ "kani_macros",
+]
+
+[[package]]
+name = "kani_macros"
+version = "0.32.0"
+dependencies = [
+ "proc-macro-error",
+ "proc-macro2 1.0.66",
+ "quote 1.0.31",
+ "syn 2.0.26",
+]
+
+[[package]]
 name = "keccak"
 version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1180,20 +1197,28 @@ version = "0.1.0"
 dependencies = [
  "borsh 0.10.3",
  "hex",
- "num-traits",
- "onchor-macro",
+ "kani",
+ "otter-solana-macro",
+ "otter-solana-program",
  "thiserror",
 ]
 
 [[package]]
-name = "onchor-macro"
+name = "opaque-debug"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
+
+[[package]]
+name = "otter-solana-macro"
 version = "0.1.0"
 dependencies = [
- "onchor-macro-core",
+ "kani",
+ "otter-solana-macro-core",
 ]
 
 [[package]]
-name = "onchor-macro-core"
+name = "otter-solana-macro-core"
 version = "0.1.0"
 dependencies = [
  "anchor-syn 0.28.0",
@@ -1205,10 +1230,15 @@ dependencies = [
 ]
 
 [[package]]
-name = "opaque-debug"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
+name = "otter-solana-program"
+version = "0.1.0"
+dependencies = [
+ "borsh 0.10.3",
+ "hex",
+ "kani",
+ "num-traits",
+ "otter-solana-macro",
+]
 
 [[package]]
 name = "parking_lot"
@@ -1271,6 +1301,30 @@ checksum = "7f4c021e1093a56626774e81216a4ce732a735e5bad4868a03f3ed65ca0c3919"
 dependencies = [
  "once_cell",
  "toml_edit",
+]
+
+[[package]]
+name = "proc-macro-error"
+version = "1.0.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "da25490ff9892aab3fcf7c36f08cfb902dd3e71ca0f9f9517bea02a73a5ce38c"
+dependencies = [
+ "proc-macro-error-attr",
+ "proc-macro2 1.0.66",
+ "quote 1.0.31",
+ "syn 1.0.109",
+ "version_check",
+]
+
+[[package]]
+name = "proc-macro-error-attr"
+version = "1.0.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a1be40180e52ecc98ad80b184934baf3d0d29f979574e439af5a55274b35f869"
+dependencies = [
+ "proc-macro2 1.0.66",
+ "quote 1.0.31",
+ "version_check",
 ]
 
 [[package]]
@@ -1747,7 +1801,7 @@ dependencies = [
  "default-env",
  "hex",
  "onchor",
- "onchor-macro",
+ "otter-solana-macro",
  "solana-security-txt",
 ]
 
