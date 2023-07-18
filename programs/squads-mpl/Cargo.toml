@@ -19,7 +19,7 @@ no-idl = []
 no-log-ix-name = []
 cpi = ["no-entrypoint"]
 default = []
-kani = ["anchor-lang/kani"]
+kani = ["anchor-lang/kani", "otter-solana-verify/kani"]
 
 [dependencies]
 #anchor-lang = "0.26.0"
