@@ -18,6 +18,7 @@ The program facilitates signing and executing transactions on behalf of a multis
 * [Verifying](#verifying)
 * [Contributing](#contributing)
 * [Other Tools and Programs](#other-tools-and-programs)
+* [Formal Verification](#formal-verification)
 
 ## Get started
 `anchor test --skip-deploy` will run through the basic functionality of the multisig. You may need to adjust the declared program id.
@@ -55,7 +56,7 @@ Internal instructions related to handling MsTransactions:
 ### Authorities
 Each created and executed MsTransaction does so on behalf of an authority. Authorities are derived by a u32, and saved in the MsTransaction account when created (by passing in the `authority_index` argument). The Authority with an index of 0 is reserved for MsTransactions that affect the multisig directly (add member, change threshold, etc). Other authority indexes are agnostic and represent the underlying account/PDA that will be signed for during execution. For example, a multisig can use `authority_index 1` for a vault, `authority_index 2` for a secondary vault, and `authority_index 3` for a program upgrade authority. It is up to the end user to decide how to leverage these and to make sure that the `authority_index` in the created MsTransaction matches the necessary accounts specified in the attached instructions.
 
-There is an additional instruction if the multisig wishes to increment the authority_index saved in the Ms account, to make it easier to derive authority PDAs for a user interface. the authority_index in the Ms account is optionally used as a way to derive authorities that may have been used, but it has no affect on how the multisig operates - it's strictly for convenience. 
+There is an additional instruction if the multisig wishes to increment the authority_index saved in the Ms account, to make it easier to derive authority PDAs for a user interface. the authority_index in the Ms account is optionally used as a way to derive authorities that may have been used, but it has no affect on how the multisig operates - it's strictly for convenience.
 
 ## Create a Multisig
 To create a multisig with the Squads MPL, invoke the `create` [instruction](https://github.com/Squads-Protocol/squads-mpl/blob/main/programs/squads-mpl/src/lib.rs#L22). Specify the threshold of the multisig, a preferably random key to seed the multisig address, and the keys that will be required to sign off on any transactions.
@@ -80,7 +81,7 @@ First MsInstruction (`instruction_index of 1`)
 * The PDA of the MsInstruction
 * The program_id that will be invoked by the MsInstruction
 * A list of all other accounts referenced by the attached MsInstruction
-  
+
 Second MsInstruction (`instruction_index of 2`)
 * The PDA of the MsInstruction
 * The program_id that will be invoked by the MsInstruction
@@ -94,9 +95,19 @@ You can verify the build and on-chain program from commit `c95b7673d616c377a349c
 Note: currently due to a quirk, be sure to `avm use 0.24.0` otherwise the IDL won't be verified, only the program itself.
 
 ## Contributing
-The community is encouraged to contribute to the Squads-MPL, either by proposing fixes, updates, or adding more programs. 
-For general proposed fixes and features, please submit a pull request for review. 
+The community is encouraged to contribute to the Squads-MPL, either by proposing fixes, updates, or adding more programs.
+For general proposed fixes and features, please submit a pull request for review.
 
 ## Other Tools and Programs
 * [Program Manager](https://github.com/squads-dapp/squads-mpl/tree/main/programs/program-manager) - a program to manage program upgrades for Squads multisigs
 * [Squads Grinder](https://github.com/mralbertchen/squads-grinder) -Vanity authority key grinder if you want to try to grind a vault/authority address
+
+## Formal Verification
+### Preqrequisites
+* [Rust](https://www.rust-lang.org/tools/install)
+* [Cargo Kani](https://github.com/model-checking/kani)
+
+### Running
+```bash
+cargo kani
+```
