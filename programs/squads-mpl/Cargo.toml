@@ -2,7 +2,10 @@
 name = "squads-mpl"
 version = "1.3.0"
 description = "Squads Multisig Program Library"
-authors = ["Sean Lars Ganser <sean@sqds.io>", "Bastien Guillaumat <bastien@sqds.io>"]
+authors = [
+    "Sean Lars Ganser <sean@sqds.io>",
+    "Bastien Guillaumat <bastien@sqds.io>",
+]
 homepage = "https://squads.so"
 repository = "https://github.com/squads-dapp/squads-mpl"
 edition = "2018"
@@ -22,10 +25,10 @@ default = []
 kani = ["anchor-lang/kani", "otter-solana-verify/kani"]
 
 [dependencies]
-#anchor-lang = "0.26.0"
-anchor-lang = { package = "onchor", path = "/Users/kadir/c/otter/suite/verify/solana/anchor" }
+anchor-lang = { package = "onchor", git = "https://github.com/otter-sec/verify" }
 default-env = "0.1.1"
 hex = "0.3.1"
-#otter-solana-verify = "1.0.2"
-otter-solana-verify = { package = "otter-solana-macro", path = "/Users/kadir/c/otter/suite/verify/solana/macro", features = ["anchor"] }
+otter-solana-verify = { package = "otter-solana-macro", git = "https://github.com/otter-sec/verify", features = [
+    "anchor",
+] }
 solana-security-txt = "1.0.1"
